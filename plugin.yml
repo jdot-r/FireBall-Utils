@@ -1,1 +1,6 @@
-
+name: FireBall-Utils
+main: Utils\Main
+version: 1.0
+api: ["2.0.0", "1.14.0"]
+author: C.S
+description: Allow's you to control FireBall's
