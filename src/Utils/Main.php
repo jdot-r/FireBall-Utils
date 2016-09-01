@@ -4,8 +4,6 @@ namespace Utils;
 
 use pocketmine\plugin\PluginBase as Base;
 
-//config later, maybe
-
 class Main extends Base{
   
   public function onLoad(){
@@ -13,10 +11,12 @@ class Main extends Base{
   }
   
   public function onEnable(){
-    $this->getServer()->getPluginManager()->registerEvents($this, $this);
-  }
-  
-  public function onDisable(){
-    return true;
+    @mkdir($this->getDataFolder());
+    $this->config = new Config($this->getDataFolder()."config.yml", Config::YAML, [
+      "block.breaking" => false,
+      "size" => 10
+      ]);
+      $this->players = new \SplObjectStorage();
+      $this->getServer()->getPluginManager()->registerEvents($this, $this);
   }
 }
