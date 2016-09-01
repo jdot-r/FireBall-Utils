@@ -27,54 +27,43 @@ use pocketmine\entity\Projectile;
 use pocketmine\entity\Entity;
 use pocketmine\level\Explosion;
 use pocketmine\event\entity\ExplosionPrimeEvent;
+
+use Utils\Main;
+
 class FireBall extends Projectile{
+    
     const NETWORK_ID = 85;
+    
     public $width = 0.5;
     public $height = 0.5;
+    
     protected $damage = 4;
+    
     protected $drag = 0.01;
     protected $gravity = 0.05;
-    protected $isCritical;
-    protected $canExplode = false;
-    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
-        parent::__construct($chunk, $nbt, $shootingEntity);
-        $this->isCritical = $critical;
-    }
-    public function isExplode() : bool{
-        return $this->canExplode;
-    }
-    public function setExplode(bool $bool){
-        $this->canExplode = $bool;
-    }
     
+    public function __construct(FullChunk $chunk, CompoundTag $nbt, Entity $shootingEntity = null){
+        parent::__construct($chunk, $nbt, $shootingEntity);
+    }
     
     public function onUpdate($currentTick){
         if($this->closed){
             return false;
         }
-        $this->timings->startTiming();
-        $hasUpdate = parent::onUpdate($currentTick);
         if($this->isAlive()){
+			$hasUpdate = true;
             $this->level->addParticle(new CriticalParticle($this->add(
                 $this->width / 2 + mt_rand(-100, 100) / 500,
                 $this->height / 2 + mt_rand(-100, 100) / 500,
                 $this->width / 2 + mt_rand(-100, 100) / 500)));
-        }elseif($this->onGround){
-            $this->explode();
         }
+        $this->timings->startTiming();
+        $hasUpdate = parent::onUpdate($currentTick);
         if($this->age > 1200 or $this->isCollided){
-            if($this->isCollided and $this->canExplode){
-                $this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 2.8));
-                if(!$ev->isCancelled()){
-                    $explosion = new Explosion($this, $ev->getForce(), $this->shootingEntity);
-                    if($ev->isBlockBreaking()){
-                        $explosion->explodeA();
-                    }
-                    $explosion->explodeB();
-                }
-            }
-            $this->kill();
-            $hasUpdate = true;
+			$this->kill();
+			$this->explode();
+			$this->setOnFire(true);
+			$hasUpdate = true;
         }
         $this->timings->stopTiming();
         return $hasUpdate;
