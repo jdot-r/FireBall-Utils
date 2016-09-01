@@ -15,6 +15,7 @@ class Main extends Base{
     @mkdir($this->getDataFolder());
     $this->config = new Config($this->getDataFolder()."config.yml", Config::YAML, [
       "block.breaking" => false,
+      "percent.chance" => 5,
       "size" => 10
       ]);
       $this->players = new \SplObjectStorage();
