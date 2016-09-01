@@ -25,8 +25,7 @@ class Listener extends PluginBase implements Listener{
   public function onDamage(EntityDamageEvent $action){
     $e = $action->getEntity();
     if($action instanceof EntityDamageByEntityEvent){
-      if($e instanceof Player && $e->hasPermission("fireball.use")){
-        if(!$e instanceof Player && $e->hasPermission("fireball.use")){
+      if(!$e instanceof Player && $e->hasPermission("fireball.use")){
           return true;
         }
         $f = 1.0;
