@@ -46,19 +46,21 @@ class FireBall extends Projectile{
     public function setExplode(bool $bool){
         $this->canExplode = $bool;
     }
+    
+    
     public function onUpdate($currentTick){
         if($this->closed){
             return false;
         }
         $this->timings->startTiming();
         $hasUpdate = parent::onUpdate($currentTick);
-        if(!$this->hadCollision and $this->isCritical){
+        if($this->isAlive()){
             $this->level->addParticle(new CriticalParticle($this->add(
                 $this->width / 2 + mt_rand(-100, 100) / 500,
                 $this->height / 2 + mt_rand(-100, 100) / 500,
                 $this->width / 2 + mt_rand(-100, 100) / 500)));
         }elseif($this->onGround){
-            $this->isCritical = false;
+            $this->explode();
         }
         if($this->age > 1200 or $this->isCollided){
             if($this->isCollided and $this->canExplode){
