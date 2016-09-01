@@ -18,6 +18,8 @@ use pocketmine\Server;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as tf;
 
+use Utils\Main;
+
 class Listener extends Listener{
   
   public function onDamage(EntityDamageEvent $action){
