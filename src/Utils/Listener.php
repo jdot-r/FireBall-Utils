@@ -24,9 +24,10 @@ class Listener extends Listener{
   
   public function onDamage(EntityDamageEvent $action){
     $e = $action->getEntity();
+    $d = $action->getDamager();
     $random = $this->config->get("percent.chance");
     if($action instanceof EntityDamageByEntityEvent){
-      if(!$e instanceof Player && $e->hasPermission("fireball.use")){
+      if(!$d instanceof Player && $d->hasPermission("fireball.use")){
           return true;
         }
         switch(mt_rand(1, $random)){
@@ -34,21 +35,21 @@ class Listener extends Listener{
             $f = 1.0;
             $nbt = new CompoundTag("", [
               "Pos" => new ListTag("Pos", [
-                new DoubleTag("", $player->x),
-                new DoubleTag("", $player->y + $player->getEyeHeight()),
-                new DoubleTag("", $player->z)
+                new DoubleTag("", $d->x),
+                new DoubleTag("", $d->y + $d->getEyeHeight()),
+                new DoubleTag("", $d->z)
                 ]),
                 "Motion" => new ListTag("Motion", [
-                  new DoubleTag("", - \sin ( $player->yaw / 180 * M_PI ) *\cos ( $player->pitch / 180 * M_PI )),
-                  new DoubleTag("", - \sin ( $player->pitch / 180 * M_PI )),
-        		      new DoubleTag("", \cos ( $player->yaw / 180 * M_PI ) *\cos ( $player->pitch / 180 * M_PI ))
+                  new DoubleTag("", - \sin ( $d->yaw / 180 * M_PI ) *\cos ( $d->pitch / 180 * M_PI )),
+                  new DoubleTag("", - \sin ( $d->pitch / 180 * M_PI )),
+        		      new DoubleTag("", \cos ( $d->yaw / 180 * M_PI ) *\cos ( $d->pitch / 180 * M_PI ))
         		      ]),
         		      "Rotation" => new ListTag("Rotation", [
         		        new FloatTag("", lcg_value() * 360),
         			      new FloatTag("", 0)
         			      ]),
         			      ]);
-        			      $bomb = Entity::createEntity("FireBall", $player->getLevel()->getChunk($player->x >> 4, $player->z >> 4), $nbt);
+        			      $bomb = Entity::createEntity("FireBall", $d->getLevel()->getChunk($d->x >> 4, $d->z >> 4), $nbt);
         			      $bomb->setMotion($bomb->getMotion()->multiply($f));
         			      $bomb->setOnFire(true);
         			      $bomb->spawnToAll();
