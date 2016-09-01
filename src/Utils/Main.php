@@ -3,6 +3,7 @@
 namespace Utils;
 
 use pocketmine\plugin\PluginBase as Base;
+use pocketmine\entity\Entity;
 
 class Main extends Base{
   
@@ -18,5 +19,6 @@ class Main extends Base{
       ]);
       $this->players = new \SplObjectStorage();
       $this->getServer()->getPluginManager()->registerEvents($this, $this);
+      Entity::registerEntity(FireBall::class, true);
   }
 }
